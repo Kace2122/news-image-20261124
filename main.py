@@ -18,12 +18,15 @@ MAX_BYTES = 1_048_576  # competition cap: entry.png must be at most 1 MiB
 
 
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+EXPECTED_SHA256 = "5437f958e531dc0ba86e8539766fd07b50f3d1cbbfc2de5adf41a19e3bb4f481"  # the reviewed front page
 
 
 def main() -> None:
     data = SOURCE.read_bytes()
     if not data.startswith(PNG_MAGIC):
         raise SystemExit("entry.png is not a whole PNG file")
+    if hashlib.sha256(data).hexdigest() != EXPECTED_SHA256:
+        raise SystemExit("entry.png is not the reviewed front page")
     if len(data) > MAX_BYTES:
         raise SystemExit(
             f"entry.png is {len(data)} bytes, over the {MAX_BYTES} byte cap"
